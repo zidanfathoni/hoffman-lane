@@ -10,10 +10,10 @@ import { Toaster } from '@/components/atoms/toaster';
 const interFont = Inter({ subsets: ['latin'], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: {
-    template: '%s | by Chocoding.in',
-    default: 'Chocoding.in',
+    template: '%s | by Hoffmann Lane',
+    default: 'Hoffmann Lane',
   },
-  description: 'A web by Chocoding.in',
+  description: 'A web by Hoffmann Lane',
 };
 
 export default async function RootLayout({
@@ -21,16 +21,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const locale = await getLocale();
-  const langs = await getMessages();
 
   return (
-    <html lang={locale} className={interFont.variable}>
+    <html className={`${interFont.variable} scroll-smooth dark`}>
       <head>
         <link rel="icon" href="/images/logo.svg" sizes="any" />
       </head>
       <body className="overflow-x-hidden font-inter">
-        <NextIntlClientProvider messages={langs}>
+        <NextIntlClientProvider>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

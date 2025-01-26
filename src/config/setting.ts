@@ -17,7 +17,7 @@ export const Setting = {
   moneyPrecision: 0,
   defaultIconSize: 16,
 
-  progressBarColor: '#fffd00',
+  progressBarColor: '#C8CBB8',
   progressBarThickness: '4px',
 
   author: {
@@ -27,8 +27,6 @@ export const Setting = {
     insta: 'https://www.instagram.com/chocoding.in',
     logo: {
       default: 'logo.svg',
-      onLight: 'logo-colored.svg',
-      onDark: 'logo-white.svg',
     },
   },
 };

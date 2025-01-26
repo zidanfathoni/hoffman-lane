@@ -11,6 +11,13 @@ const axiosApi: AxiosInstance = axios.create({
   baseURL: Connections.main,
 });
 
+const api: AxiosInstance = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_MAIN_URL, // gunakan variabel lingkungan untuk base URL
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 axiosApi.interceptors.request.use(
   async (conf: InternalAxiosRequestConfig) => {
     const userData = Storage.get<TuserData>('local', 'user_data');
@@ -115,4 +122,4 @@ axiosApi.interceptors.response.use(
   },
 );
 
-export { axiosApi };
+export { axiosApi, api };
