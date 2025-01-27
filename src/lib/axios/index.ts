@@ -1,4 +1,4 @@
-import { axiosApi } from './instance';
+import { api, axiosApi } from './instance';
 import { refreshToken } from './refresh-token';
 
-export { axiosApi, refreshToken };
+export { axiosApi, refreshToken, api };

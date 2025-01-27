@@ -109,7 +109,7 @@ const Header: React.FC = () => {
           <Button
             onClick={() => (window.location.href = '/auth')}
             variant="outline">
-            Sign in
+            Admin
           </Button>
         </div>
         <div className="flex w-12 shrink lg:hidden items-end justify-end">

@@ -20,8 +20,34 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/atoms/tooltip';
+import { useState } from 'react';
+import { useEffect } from 'react';
+import { Storage } from '@/lib/storage';
+import { PostLoginResponse } from '@/lib/interface/auth/post-login';
+import { useRouter } from 'next/navigation';
 
 export function UserNav() {
+  const router = useRouter()
+
+
+  const [userData, setUserData] = useState<PostLoginResponse | null>(null);
+
+  useEffect(() => {
+    const userId = Storage.get('local', 'userID');
+    const user = Storage.get('local', 'user_data') as PostLoginResponse;
+
+    setUserData(user);
+  }, []);
+
+  //onclick, remove local storage
+  const handleSignOut = () => {
+    Storage.remove('local', 'userID');
+    Storage.remove('local', 'user_data');
+
+    router.push('/');
+  };
+
+
   return (
     <DropdownMenu>
       <TooltipProvider disableHoverableContent>
@@ -31,7 +57,9 @@ export function UserNav() {
               <Button variant="outline" className="relative h-8 w-8 rounded-full">
                 <Avatar className="h-8 w-8">
                   <AvatarImage src="#" alt="Avatar" />
-                  <AvatarFallback className="bg-transparent">JD</AvatarFallback>
+                  <AvatarFallback className="bg-transparent">
+                    <User className="h-6 w-6 text-muted-foreground" />
+                  </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
@@ -43,27 +71,14 @@ export function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">John Doe</p>
-            <p className="text-xs leading-none text-muted-foreground">johndoe@example.com</p>
+            <p className="text-sm font-medium leading-none">{userData?.data.username}</p>
+            <p className="text-xs leading-none text-muted-foreground">{userData?.data.email}</p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/dashboard" className="flex items-center">
-              <LayoutGrid className="mr-3 h-4 w-4 text-muted-foreground" />
-              Dashboard
-            </Link>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="hover:cursor-pointer" asChild>
-            <Link href="/account" className="flex items-center">
-              <User className="mr-3 h-4 w-4 text-muted-foreground" />
-              Account
-            </Link>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => { }}>
+        <DropdownMenuItem className="hover:cursor-pointer" onClick={() => {
+          handleSignOut();
+        }}>
           <LogOut className="mr-3 h-4 w-4 text-muted-foreground" />
           Sign out
         </DropdownMenuItem>

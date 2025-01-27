@@ -1,7 +1,7 @@
 
 import { ContentLayout } from "@/components/templates/admin-panel/content-layout"
 import { Link } from "lucide-react"
-import TableUsers from "./table"
+import TableUsers from "../../../modules/users"
 
 
 const UsersPage = () => {
