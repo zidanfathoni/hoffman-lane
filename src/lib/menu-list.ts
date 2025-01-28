@@ -1,4 +1,4 @@
-import { LayoutGrid, LucideIcon, User, Users, QrCode, Box, ArrowLeftRight, List, BookCopy } from 'lucide-react';
+import { LayoutGrid, LucideIcon, User, Users, QrCode, Box, ArrowLeftRight, List, Utensils } from 'lucide-react';
 
 type Submenu = {
   href: string;
@@ -78,7 +78,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: '/dashboard/menu',
           label: 'Menu',
-          icon: BookCopy,
+          icon: Utensils,
         },
       ],
     },

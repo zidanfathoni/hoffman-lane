@@ -86,6 +86,7 @@ import { Dialog, DialogTrigger } from "@/components/atoms/dialog";
 import { DataQrCode, GetQrCodeResponse } from "@/lib/interface/qrcode/get-qrcode";
 import AddQrCodeDialog from "./add-category";
 import DeleteQrCodeDialog from "./delete-qrcode";
+import { printQRCode } from "@/helper/imageToPdf";
 
 
 // Custom filter function for multi-column searching
@@ -504,19 +505,25 @@ export default function TableQrCode() {
 }
 
 function RowActions({ row }: { row: Row<DataQrCode> }) {
+  const handlePrint = ({
+    image,
+  }: {
+    image: string;
+  }) => {
+    const cdnImage = process.env.NEXT_PUBLIC_CDN_URL + "/assets/code/";
+    printQRCode(cdnImage + image);
+  };
   const [isOpen, setIsOpen] = useState(true)
   return (
     //row button (edit, delete, change password)
     <div className="flex items-center justify-start gap-2">
-      {/* <Dialog>
-        <DialogTrigger asChild>
-          <Button variant="outline" className="text-xs bg-orange-500 hover:bg-primary">Edit</Button>
-        </DialogTrigger>
-        <EditQrCodeDialog
-          isOpen={isOpen}
-          id={row.original.id}
-        />
-      </Dialog> */}
+
+      <Button
+        variant="outline"
+        className="text-xs bg-orange-500 hover:bg-primary"
+        onClick={() => handlePrint({ image: row.original.imageQr })}
+      >Print</Button>
+
       <Dialog>
         <DialogTrigger asChild>
           <Button variant="outline" className="text-xs bg-red-500 hover:bg-primary">Delete</Button>
