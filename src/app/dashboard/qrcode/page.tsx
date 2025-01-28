@@ -1,19 +1,19 @@
 
 import { ContentLayout } from "@/components/templates/admin-panel/content-layout"
+import TableQrCode from "@/modules/dashboard/qrcode"
 import { Link } from "lucide-react"
-import TableUsers from "../../../modules/dashboard/users"
 
 
-const UsersPage = () => {
+const DashboardQrCodePage = () => {
   return (
-    <ContentLayout title="Users">
+    <ContentLayout title="Qr Code">
 
       <div className="container">
 
-        <TableUsers />
+        <TableQrCode />
       </div>
     </ContentLayout>
   )
 }
 
-export default UsersPage
+export default DashboardQrCodePage

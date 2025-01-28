@@ -1,4 +1,8 @@
 import { Button } from "@/components/atoms";
+import { toast } from "@/components/atoms/use-toast";
+import { addOrder, addTable, getOrders, getTable, Order, OrderItems } from "@/modules/order/order";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 
 interface MenuListProps {
@@ -17,6 +21,67 @@ interface MenuListProps {
 
 const MenuList: React.FC<MenuListProps> = ({ menu }) => {
   const cdnImage = process.env.NEXT_PUBLIC_CDN_URL + "/assets/";
+  const [ordersItems, setOrdersItems] = useState<OrderItems[]>([]);
+  const [orders, setOrders] = useState<Order>();
+  const searchParams = useSearchParams();
+
+  useEffect(() => {
+    const meja = searchParams.get("meja");
+    console.log('meja', meja);
+    if (meja !== null) {
+      console.log('meja', meja);
+      const tableNumber = parseInt(meja);
+      if (!isNaN(tableNumber)) {
+        addTable(tableNumber);
+        console.log('tableNumber', tableNumber);
+        console.log('getTable', getTable());
+      }
+    }
+  }, [searchParams]);
+
+
+  useEffect(() => {
+    // Ambil data order dari localStorage saat komponen dimuat
+    setOrdersItems(getOrders());
+  }, []);
+
+
+  // Fungsi untuk handle penambahan order
+  const handleAddOrder = ({
+    id,
+    name,
+    description,
+    category,
+    image,
+    quantity,
+    price,
+  }: {
+    id: number;
+    name: string;
+    description: string;
+    category: string;
+    image: string;
+    quantity: number;
+    price: number;
+  }) => {
+    const newOrder: OrderItems = {
+      id: id, // ID unik
+      name: name,
+      description: description,
+      category: category,
+      image: image,
+      quantity: quantity,
+      price: price,
+    };
+    addOrder(newOrder);
+    setOrdersItems(getOrders()); // Refresh data dari localStorage
+
+    toast({
+      title: 'Success',
+      description: 'Added to cart',
+    });
+  };
+
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6 mb-5">
       {menu.map((post) => (
@@ -51,6 +116,15 @@ const MenuList: React.FC<MenuListProps> = ({ menu }) => {
               // Add to cart post.href
 
               e.preventDefault();
+              handleAddOrder({
+                id: post.id,
+                name: post.name,
+                description: post.description,
+                category: post.category.name,
+                image: post.upload_menu,
+                quantity: 1,
+                price: post.price,
+              });
             }}
           >Add to Cart</Button>
         </div>

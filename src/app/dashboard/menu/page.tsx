@@ -1,19 +1,19 @@
 
 import { ContentLayout } from "@/components/templates/admin-panel/content-layout"
+import TableMenu from "@/modules/dashboard/menu"
 import { Link } from "lucide-react"
-import TableUsers from "../../../modules/dashboard/users"
 
 
-const UsersPage = () => {
+const DashboardMenuPage = () => {
   return (
-    <ContentLayout title="Users">
+    <ContentLayout title="Menu">
 
       <div className="container">
 
-        <TableUsers />
+        <TableMenu />
       </div>
     </ContentLayout>
   )
 }
 
-export default UsersPage
+export default DashboardMenuPage

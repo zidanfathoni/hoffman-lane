@@ -1,4 +1,4 @@
-import { Bookmark, LayoutGrid, LucideIcon, Settings, User, Tag, Users } from 'lucide-react';
+import { LayoutGrid, LucideIcon, User, Users, QrCode, Box, ArrowLeftRight, List, BookCopy } from 'lucide-react';
 
 type Submenu = {
   href: string;
@@ -58,7 +58,7 @@ export function getMenuList(pathname: string): Group[] {
         {
           href: '/dashboard/transactions',
           label: 'Transactions',
-          icon: Users,
+          icon: ArrowLeftRight,
         },
       ],
     },
@@ -66,19 +66,29 @@ export function getMenuList(pathname: string): Group[] {
       groupLabel: 'Menu & Stocks',
       menus: [
         {
-          href: '/dashboard/inventory',
+          href: '/dashboard/stok',
           label: 'Stock Inventory',
-          icon: Users,
+          icon: Box,
         },
         {
           href: '/dashboard/category',
           label: 'Category',
-          icon: Settings,
+          icon: List,
         },
         {
           href: '/dashboard/menu',
           label: 'Menu',
-          icon: Tag,
+          icon: BookCopy,
+        },
+      ],
+    },
+    {
+      groupLabel: 'Qr Code',
+      menus: [
+        {
+          href: '/dashboard/qrcode',
+          label: 'Qr Code',
+          icon: QrCode,
         },
       ],
     },

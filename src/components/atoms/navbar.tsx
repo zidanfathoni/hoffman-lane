@@ -21,7 +21,7 @@ const Header: React.FC = () => {
     {
       title: "Menu",
       description: "",
-      href: "#menu"
+      href: "/menu"
     },
     {
       title: "Recommendation",

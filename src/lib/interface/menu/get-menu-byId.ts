@@ -1,11 +1,11 @@
-export interface GetMenuResponse {
+export interface GetMenuByIdResponse {
   status: boolean
   message: string
   active: number | 0
-  data: DataMenu[]
+  data: DataMenuById
 }
 
-export interface DataMenu {
+export interface DataMenuById {
   id: number
   name: string
   description: string

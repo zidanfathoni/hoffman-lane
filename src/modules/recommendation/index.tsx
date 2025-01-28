@@ -99,11 +99,11 @@ const MenuRecommendationModules = () => {
         ) : <MenuList menu={dataMenu} />
       }
 
-      <div className="flex justify-center">
+      {/* <div className="flex justify-center">
         <Button variant="outline" className="px-10 border-black">
           Show More
         </Button>
-      </div>
+      </div> */}
     </div>
   );
 };

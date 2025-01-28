@@ -87,6 +87,7 @@ import { Dialog, DialogTrigger } from "@/components/atoms/dialog";
 import EditUsersDialog from "./edit-users";
 import { OpenDataUsersById } from "@/lib/interface/users/get-users-byId";
 import DeleteUsersDialog from "./delete-users";
+import AddUsersDialog from "./add-users";
 
 
 // Custom filter function for multi-column searching
@@ -129,7 +130,7 @@ const columns: ColumnDef<DataUsers>[] = [
     header: "Username",
     accessorKey: "username",
     cell: ({ row }) => <div className="font-medium">{row.getValue("username")}</div>,
-    size: 150,
+    size: 220,
     filterFn: multiColumnFilterFn,
     enableHiding: false,
   },
@@ -321,10 +322,17 @@ export default function TableUsers() {
             </AlertDialog>
           )}
           {/* Add user button */}
-          <Button className="ml-auto" variant="outline">
-            <Plus className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
-            Add user
-          </Button>
+
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="ml-auto" variant="outline">
+                <Plus className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
+                Add user
+              </Button>
+            </DialogTrigger>
+            <AddUsersDialog
+            />
+          </Dialog>
         </div>
       </div>
 
@@ -541,7 +549,7 @@ function RowActions({ row }: { row: Row<DataUsers> }) {
           id={row.original.id}
         />
       </Dialog>
-      <Dialog>
+      {/* <Dialog>
         <DialogTrigger asChild>
           <Button variant="outline" className="text-xs bg-gray-400 hover:bg-primary">Change Password</Button>
         </DialogTrigger>
@@ -549,7 +557,7 @@ function RowActions({ row }: { row: Row<DataUsers> }) {
           isOpen={isOpen}
           id={row.original.id}
         />
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 }

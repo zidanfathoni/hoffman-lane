@@ -8,8 +8,6 @@ const HomeModules: React.FC = () => {
   return (
     <>
       <HeroSection />
-      <MenuSection />
-      <MenuRecommendationSection />
       <ContactSection />
     </>
   )

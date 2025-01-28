@@ -1,4 +1,6 @@
 import { Button } from "@/components/atoms";
+import { GetMenuResponse } from "@/lib/interface/menu/get-menu";
+import { useState } from "react";
 
 
 
@@ -11,6 +13,7 @@ interface CategoryListProps {
 
 
 const CategoryList: React.FC<CategoryListProps> = ({ id, category, onClick }) => {
+  const [dataCategory, setDataCategory] = useState<GetMenuResponse>();
   return (
     <div className="mt-8 pb-12">
       <div className="flex flex-wrap gap-3 items-center justify-center">
@@ -34,6 +37,9 @@ const CategoryList: React.FC<CategoryListProps> = ({ id, category, onClick }) =>
             onClick={() => {
               if (onClick) {
                 onClick(category.id);
+                //change dataCategory.active
+
+
                 console.log(category.id);
               }
             }}
