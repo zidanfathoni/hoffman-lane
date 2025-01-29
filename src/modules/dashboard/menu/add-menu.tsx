@@ -15,7 +15,14 @@ import {
 import { api } from "@/lib"
 import { Eye, EyeOff } from "lucide-react"
 import { DataCategory, GetCategoryResponse } from "@/lib/interface/category/get-category"
+import { Checkbox } from "@/components/atoms/checkbox"
 
+
+interface CategoryData {
+  id: number
+  name: string
+  description: string
+}
 
 const AddMenuDialog: React.FC = () => {
   const cdnImage = process.env.NEXT_PUBLIC_CDN_URL + "/assets/";
@@ -24,8 +31,9 @@ const AddMenuDialog: React.FC = () => {
   const [price, setPrice] = useState<number>(0);
   const [upload_menu, setUploadMenu] = useState<string>('');
   const [status, setStatus] = useState<boolean>(false);
-  const [category, setCategory] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryData | null>(null)
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
 
   const [loadingMenuById, setLoadingMenuById] = useState<boolean>(true);
@@ -39,14 +47,35 @@ const AddMenuDialog: React.FC = () => {
   const [errorCategory, setErrorCategory] = useState<string | null>(null);
 
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setUploadMenu(URL.createObjectURL(file));
-      console.log("Selected file:", file);
+  // const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = event.target.files?.[0];
+  //   if (file) {
+  //     setSelectedFile(file);
+  //     setUploadMenu(URL.createObjectURL(file));
+  //     console.log("Selected file:", file);
+  //   }
+  // };
+  const handleSelectChange = (id: number, name: string) => {
+    console.log("Selected category:", id, name);
+    setSelectedCategoryId(id);
+    setSelectedCategoryName(name);
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0]
+    if (selectedFile) {
+      setSelectedFile(selectedFile)
+      const reader = new FileReader()
+      reader.onloadend = () => {
+        setUploadMenu(reader.result as string)
+      }
+      reader.readAsDataURL(selectedFile)
     }
-  };
+  }
+
+  const toggleSelected = (value: boolean) => {
+    setStatus(value);
+  }
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,22 +85,28 @@ const AddMenuDialog: React.FC = () => {
 
   const addDataMenuById = async () => {
     setLoadingMenuById(true);
+    const formData = new FormData();
+    console.log("selectedFile", selectedFile);
     if (selectedFile) {
-      const formData = new FormData();
       formData.append("name", name);
+      formData.append("idKategori", selectedCategory?.id.toString() || '');
       formData.append("description", description);
       formData.append("price", price.toString());
-      formData.append("upload_menu", selectedFile);
+      formData.append(
+        "upload_menu",
+        selectedFile
+      );
       formData.append("status", status.toString());
-      formData.append("category", selectedCategoryId.toString());
+
       try {
-        const response = await api.post(`/menu/`,
+        const response = await api.post(`/menu`,
           formData,
           {
             headers: {
-              'Content-Type': 'application/json',
+              'Content-Type': 'multipart/form-data',
             },
-          }); // ganti '/endpoint' dengan endpoint yang sesuai
+          }
+        ); // ganti '/endpoint' dengan endpoint yang sesuai
       } catch (error) {
         setErrorMenuById('Failed to fetch data');
       } finally {
@@ -151,7 +186,15 @@ const AddMenuDialog: React.FC = () => {
               Category
             </Label>
             <Select
-              defaultValue={category}
+              onValueChange={(value) => {
+                console.log("Selected category:", value);
+                setSelectedCategoryName(value);
+                //search category id by name
+                const category = dataCategory.find((category) => category.name === value);
+                if (category) {
+                  setSelectedCategory(category);
+                }
+              }}
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select Category" />
@@ -159,19 +202,14 @@ const AddMenuDialog: React.FC = () => {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Category</SelectLabel>
-                  {
-                    dataCategory.map((category) => {
-                      return (
-                        <SelectItem
-                          key={category.id}
-                          onSelect={() => {
-                            setCategory(category.name);
-                            setSelectedCategoryId(category.id);
-                          }}
-                          value={category.name}>{category.name}</SelectItem>
-                      )
-                    })
-                  }
+                  {dataCategory.map((category) => (
+                    <SelectItem
+                      key={category.id}
+                      value={category.name}
+                    >
+                      {category.name}
+                    </SelectItem>
+                  ))}
                 </SelectGroup>
               </SelectContent>
             </Select>
@@ -180,15 +218,11 @@ const AddMenuDialog: React.FC = () => {
             <Label htmlFor="image" className="text-right">
               Image
             </Label>
-            <Input
-              id="image"
-              type="file"
-              defaultValue={selectedFile?.name}
-              onChange={handleFileChange}
+            <Input id="image" type="file" accept="image/*" onChange={handleFileChange}
               className="col-span-3" />
           </div>
           <div
-            className=" items-end justify-end"
+            className="flex items-end justify-end"
           >
             {
               selectedFile && (
@@ -199,6 +233,25 @@ const AddMenuDialog: React.FC = () => {
                 />
               )
             }
+          </div>
+
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="price" className="text-right">
+              Recommended?
+            </Label>
+            <div className="relative col-span-3">
+              <Checkbox id="status"
+                defaultChecked={status}
+                onCheckedChange={toggleSelected}
+                className="peer h-4 w-4 border border-gray-300 rounded-md checked:bg-blue-600 checked:border-transparent checked:text-white"
+              />
+              <label
+                htmlFor="status"
+                className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-3"
+              >
+                Check if this menu is recommended
+              </label>
+            </div>
           </div>
         </div>
       </form>
