@@ -1,6 +1,6 @@
 'use client';
 
-import { Ellipsis, LogOut } from 'lucide-react';
+import { Ellipsis, LayoutGrid, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -23,6 +23,11 @@ interface MenuProps {
 export function Menu({ isOpen }: MenuProps) {
   const pathname = usePathname();
   const menuList = getMenuList(pathname);
+  const dashboard = {
+    href: "/dashboard",
+    label: "Dashboard",
+    icon: LayoutGrid,
+  }
 
   return (
     <ScrollArea className="[&>div>div[style]]:!block">
@@ -58,7 +63,8 @@ export function Menu({ isOpen }: MenuProps) {
                         <TooltipTrigger asChild>
                           <Button
                             variant={
-                              (active === undefined && pathname.startsWith(href)) || active
+                              (active === undefined && pathname.startsWith(href)) && pathname.endsWith(href)
+                                || active
                                 ? 'default'
                                 : 'ghost'
                             }
