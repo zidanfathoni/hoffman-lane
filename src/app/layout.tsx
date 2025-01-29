@@ -7,7 +7,6 @@ import { NextIntlClientProvider } from 'next-intl';
 import { Toaster } from '@/components/atoms/toaster';
 
 // fonts
-const interFont = Inter({ subsets: ['latin'], variable: '--font-inter' });
 export const metadata: Metadata = {
   title: {
     template: '%s | by Hoffmann Lane',
@@ -23,7 +22,7 @@ export default async function RootLayout({
 }>) {
 
   return (
-    <html className={`${interFont.variable} scroll-smooth dark`}>
+    <html className={` scroll-smooth dark`}>
       <head>
         <link rel="icon" href="/images/logo.svg" sizes="any" />
       </head>
