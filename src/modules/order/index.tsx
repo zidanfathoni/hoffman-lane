@@ -149,32 +149,27 @@ const OrderModules: React.FC = () => {
             'Content-Type': 'application/json',
           },
         }); // ganti '/endpoint' dengan endpoint yang sesuai
-      (window as any).snap.pay(
+      setOrdersResponse(response.data);
+      void (window as any).snap.pay(
         ordersResponse?.data.snapToken,
         {
-          // Optional
           onSuccess: async function (result: any) {
             console.log('success');
-            /* You may add your own js here, this is just example */
             await updateOrder();
             toast({
               title: 'Success',
               description: `Payment Success`,
             });
           },
-          // Optional
           onPending: function (result: any) {
             console.log('pending');
-            /* You may add your own js here, this is just example */
             toast({
               title: 'Pending',
               description: `Payment Pending`,
             });
           },
-          // Optional
           onError: function (result: any) {
             console.log('error');
-            /* You may add your own js here, this is just example */
             toast({
               variant: 'destructive',
               title: 'Error',
@@ -182,8 +177,8 @@ const OrderModules: React.FC = () => {
             });
           }
         }
-      )
-      setOrdersResponse(response.data);
+      );
+
     } catch (error) {
       setError('Failed to fetch data');
     } finally {
