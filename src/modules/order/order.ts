@@ -18,6 +18,21 @@ export interface OrderItems {
   price: number;
 }
 
+
+export interface OrderPost {
+  gross_amount: string;
+  order_status: string;
+  qty: number;
+  table: number;
+  items: OrderItemsPost[];
+}
+
+export interface OrderItemsPost {
+  id_menu: number;
+  qty: number;
+  total: number;
+}
+
 // Mendapatkan semua data order dari localStorage
 export const getOrders = (): OrderItems[] => {
   if (typeof window !== "undefined") {
@@ -66,6 +81,13 @@ export const deleteOrder = (orderId: number): void => {
   const updatedOrders = currentOrders.filter(order => order.id !== orderId);
   Storage.set("local", "orders", JSON.stringify(updatedOrders));
 };
+
+// Menghapus semua order
+export const deleteAllOrder = (): void => {
+  const orders = Storage.get("local", "orders");
+
+  Storage.remove("local", "orders");
+}
 
 // Mengupdate order berdasarkan id
 export const updateOrder = (updatedOrder: OrderItems): void => {

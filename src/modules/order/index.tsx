@@ -3,8 +3,11 @@ import { Input } from "@/components/atoms/input";
 import { ChevronRight, Minus, Plus } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { decrementOrderQty, deleteOrder, getOrders, getTable, incrementOrderQty, Order, OrderItems } from "./order";
+import { decrementOrderQty, deleteAllOrder, deleteOrder, getOrders, getTable, incrementOrderQty, Order, OrderItems } from "./order";
 import formatToRupiah from "@/helper/formatRupiah";
+import { api } from "@/lib";
+import { ResponseOrder } from "./response-order";
+import { toast } from "@/components/atoms/use-toast";
 
 
 
@@ -13,16 +16,71 @@ const OrderModules: React.FC = () => {
   const cdnImage = process.env.NEXT_PUBLIC_CDN_URL + "/assets/";
   const [ordersItems, setOrdersItems] = useState<OrderItems[]>([]);
   const [orders, setOrders] = useState<Order | null>(null);
+  const [ordersResponse, setOrdersResponse] = useState<ResponseOrder | null>(null);
   const [subTotal, setSubTotal] = useState(0);
   const [total, setTotal] = useState(0);
   const [ppn, setPpn] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [table, setTable] = useState(0);
   const [comment, setComment] = useState("");
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   // const [data]
+
+  const setupPayment = () => {
+    const snapScript: string = "https://app.sandbox.midtrans.com/snap/snap.js"
+    const clientKey: any = process.env.MIDTRANS_CLIENT_KEY
+
+    const script = document.createElement('script')
+    script.src = snapScript
+
+    script.setAttribute("data-client-key", clientKey)
+    script.async = true
+
+    document.body.appendChild(script)
+
+    return () => {
+      document.body.removeChild(script)
+      // ; (window as any).snap.pay(
+      //   'fsdfsfsfsf',
+      //   {
+      //     // Optional
+      //     onSuccess: function (result: any) {
+      //       console.log('success');
+      //       /* You may add your own js here, this is just example */
+      //       toast({
+      //         title: 'Success',
+      //         description: `Payment Success`,
+      //       });
+      //     },
+      //     // Optional
+      //     onPending: function (result: any) {
+      //       console.log('pending');
+      //       /* You may add your own js here, this is just example */
+      //       toast({
+      //         title: 'Pending',
+      //         description: `Payment Pending`,
+      //       });
+      //     },
+      //     // Optional
+      //     onError: function (result: any) {
+      //       console.log('error');
+      //       /* You may add your own js here, this is just example */
+      //       toast({
+      //         variant: 'destructive',
+      //         title: 'Error',
+      //         description: `Payment Error`,
+      //       });
+      //     }
+      //   }
+      // )
+    }
+  }
 
 
   useEffect(() => {
+    setupPayment();
     // Ambil data order dari localStorage saat komponen dimuat
     setOrdersItems(getOrders());
     setTable(getTable());
@@ -68,6 +126,117 @@ const OrderModules: React.FC = () => {
     incrementOrderQty(id, 1); // Tambahkan qty sebanyak 1
     setOrdersItems(getOrders()); // Refresh data dari localStorage
   };
+
+
+  const postOrder = async () => {
+    setLoading(true);
+    try {
+      const response = await api.post(`/order/`,
+        JSON.stringify({
+          gross_amount: total,
+          order_status: "pending",
+          qty: ordersItems.length,
+          table: table,
+          items: ordersItems.map(order => ({
+            id_menu: order.id,
+            qty: order.quantity,
+            total: order.price * order.quantity
+          })),
+
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }); // ganti '/endpoint' dengan endpoint yang sesuai
+      ; (window as any).snap.pay(
+        ordersResponse?.data.snapToken,
+        {
+          // Optional
+          onSuccess: async function (result: any) {
+            console.log('success');
+            /* You may add your own js here, this is just example */
+            await updateOrder();
+            toast({
+              title: 'Success',
+              description: `Payment Success`,
+            });
+          },
+          // Optional
+          onPending: function (result: any) {
+            console.log('pending');
+            /* You may add your own js here, this is just example */
+            toast({
+              title: 'Pending',
+              description: `Payment Pending`,
+            });
+          },
+          // Optional
+          onError: function (result: any) {
+            console.log('error');
+            /* You may add your own js here, this is just example */
+            toast({
+              variant: 'destructive',
+              title: 'Error',
+              description: `Payment Error`,
+            });
+          }
+        }
+      )
+      setOrdersResponse(response.data);
+    } catch (error) {
+      setError('Failed to fetch data');
+    } finally {
+      setLoading(false);
+      // close dialog
+
+    }
+  };
+
+
+  const updateOrder = async () => {
+    setLoading(true);
+    try {
+      const response = await api.put(`/order/${ordersResponse?.data.order.id_order}`,
+        JSON.stringify({
+          order_status: "PAID"
+
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }); // ganti '/endpoint' dengan endpoint yang sesuai
+    } catch (error) {
+      setError('Failed to fetch data');
+    } finally {
+      setLoading(false);
+      // close dialog
+
+      deleteAllOrder();
+      window.location.reload();
+
+    }
+  };
+
+  const handleCheckout = async () => {
+    //check table
+    if (table === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Table number cannot be 0, please use real table number!`,
+      });
+    } else if (ordersItems.length === null || ordersItems.length === 0) {
+      toast({
+        variant: 'destructive',
+        title: 'Error',
+        description: `Please Order`,
+      });
+    } else {
+      postOrder();
+    }
+  }
 
 
   return (
@@ -210,7 +379,9 @@ const OrderModules: React.FC = () => {
               `w-full h-14 ${ordersItems.length === 0 && "cursor-not-allowed bg-muted"}`
 
             }
-            size="lg">
+            size="lg"
+            onClick={handleCheckout}
+          >
             Checkout
           </Button>
         </div>

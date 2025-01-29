@@ -81,31 +81,26 @@ import {
   Trash,
 } from "lucide-react";
 import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { api } from "@/lib";
+import { Dialog, DialogTrigger } from "@/components/atoms/dialog";
+import { DataOrder, GetOrdersResponse } from "@/lib/interface/orders/get-orders";
+import DetailOrderDialog from "./edit-category";
 
-type Item = {
-  id: string;
-  name: string;
-  email: string;
-  location: string;
-  flag: string;
-  status: "Active" | "Inactive" | "Pending";
-  balance: number;
-};
 
 // Custom filter function for multi-column searching
-const multiColumnFilterFn: FilterFn<Item> = (row, columnId, filterValue) => {
-  const searchableRowContent = `${row.original.name} ${row.original.email}`.toLowerCase();
+const multiColumnFilterFn: FilterFn<DataOrder> = (row, columnId, filterValue) => {
+  const searchableRowContent = `${row.original.table}`.toLowerCase();
   const searchTerm = (filterValue ?? "").toLowerCase();
   return searchableRowContent.includes(searchTerm);
 };
 
-const statusFilterFn: FilterFn<Item> = (row, columnId, filterValue: string[]) => {
+const statusFilterFn: FilterFn<DataOrder> = (row, columnId, filterValue: string[]) => {
   if (!filterValue?.length) return true;
   const status = row.getValue(columnId) as string;
   return filterValue.includes(status);
 };
 
-const columns: ColumnDef<Item>[] = [
+const columns: ColumnDef<DataOrder>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -129,70 +124,63 @@ const columns: ColumnDef<Item>[] = [
     enableHiding: false,
   },
   {
-    header: "Name",
-    accessorKey: "name",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
-    size: 180,
+    header: "Table",
+    accessorKey: "table",
+    cell: ({ row }) => <div className="font-medium">{row.getValue("table")}</div>,
+    size: 100,
     filterFn: multiColumnFilterFn,
     enableHiding: false,
   },
   {
-    header: "Email",
-    accessorKey: "email",
-    size: 220,
-  },
-  {
-    header: "Location",
-    accessorKey: "location",
-    cell: ({ row }) => (
-      <div>
-        <span className="text-lg leading-none">{row.original.flag}</span> {row.getValue("location")}
-      </div>
-    ),
-    size: 180,
-  },
-  {
     header: "Status",
-    accessorKey: "status",
+    accessorKey: "order_status",
     cell: ({ row }) => (
       <Badge
-        className={cn(
-          row.getValue("status") === "Inactive" && "bg-muted-foreground/60 text-primary-foreground",
-        )}
+        variant={
+          {
+            "pending": "destructive",
+            "PAID": "default",
+          }[row.getValue("order_status") as string] as "destructive" | undefined
+        }
       >
-        {row.getValue("status")}
+        {row.getValue("order_status")}
       </Badge>
     ),
-    size: 100,
+    size: 180,
     filterFn: statusFilterFn,
   },
   {
-    header: "Performance",
-    accessorKey: "performance",
+    header: "Order Time",
+    accessorKey: "order_time",
+    // cell: ({ row }) => <div>{row.getValue("order_time")}</div>,
+    cell: ({ row }) => <div>{new Date(row.getValue("order_time")).toLocaleString()}</div>,
+    size: 250,
+    filterFn: multiColumnFilterFn,
   },
   {
-    header: "Balance",
-    accessorKey: "balance",
-    cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("balance"));
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount);
-      return formatted;
-    },
-    size: 120,
+    header: "Qty",
+    accessorKey: "qty",
+    cell: ({ row }) => <div>{row.getValue("qty")}</div>,
+    size: 100,
+    filterFn: multiColumnFilterFn,
   },
   {
-    id: "actions",
-    header: () => <span className="sr-only">Actions</span>,
+    header: "Gross Amount",
+    accessorKey: "gross_amount",
+    cell: ({ row }) => <div>{row.getValue("gross_amount")}</div>,
+    size: 180,
+    filterFn: multiColumnFilterFn,
+  },
+  {
+    header: "Action",
     cell: ({ row }) => <RowActions row={row} />,
-    size: 60,
+    size: 100,
+    enableSorting: false,
     enableHiding: false,
   },
 ];
 
-export default function TableTransaction() {
+export default function TableOrder() {
   const id = useId();
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -204,22 +192,45 @@ export default function TableTransaction() {
 
   const [sorting, setSorting] = useState<SortingState>([
     {
-      id: "name",
+      id: "username",
       desc: false,
     },
   ]);
 
-  const [data, setData] = useState<Item[]>([]);
-  useEffect(() => {
-    async function fetchPosts() {
-      const res = await fetch(
-        "https://res.cloudinary.com/dlzlfasou/raw/upload/users-01_fertyx.json",
-      );
-      const data = await res.json();
-      setData(data);
+  const [response, setResponse] = useState<GetOrdersResponse>();
+  const [data, setData] = useState<DataOrder[]>([]);
+  const [loadingMenu, setLoadingMenu] = useState<boolean>(true);
+  const [emptyDataMenu, setEmptyDataMenu] = useState<boolean>(false);
+  const [errorMenu, setErrorMenu] = useState<string | null>(null);
+  const [activeNumber, setActiveNumber] = useState<number>(
+    response?.active ?? 0,
+  );
+
+
+  const fetchDataOrder = async () => {
+    setLoadingMenu(true);
+    try {
+      const response = await api.get<GetOrdersResponse>(`/order`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }); // ganti '/endpoint' dengan endpoint yang sesuai
+      setData(response.data.data);
+      if (response.data.data.length === 0) {
+        setEmptyDataMenu(true);
+      } else {
+        setEmptyDataMenu(false);
+      }
+    } catch (error) {
+      setErrorMenu('Failed to fetch data');
+    } finally {
+      setLoadingMenu(false);
     }
-    fetchPosts();
-  }, []);
+  };
+
+  useEffect(() => {
+    fetchDataOrder();
+  }, [response?.active]);
 
   const handleDeleteRows = () => {
     const selectedRows = table.getSelectedRowModel().rows;
@@ -251,45 +262,6 @@ export default function TableTransaction() {
     },
   });
 
-  // Get unique status values
-  const uniqueStatusValues = useMemo(() => {
-    const statusColumn = table.getColumn("status");
-
-    if (!statusColumn) return [];
-
-    const values = Array.from(statusColumn.getFacetedUniqueValues().keys());
-
-    return values.sort();
-  }, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-  // Get counts for each status
-  const statusCounts = useMemo(() => {
-    const statusColumn = table.getColumn("status");
-    if (!statusColumn) return new Map();
-    return statusColumn.getFacetedUniqueValues();
-  }, [table.getColumn("status")?.getFacetedUniqueValues()]);
-
-  const selectedStatuses = useMemo(() => {
-    const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-    return filterValue ?? [];
-  }, [table.getColumn("status")?.getFilterValue()]);
-
-  const handleStatusChange = (checked: boolean, value: string) => {
-    const filterValue = table.getColumn("status")?.getFilterValue() as string[];
-    const newFilterValue = filterValue ? [...filterValue] : [];
-
-    if (checked) {
-      newFilterValue.push(value);
-    } else {
-      const index = newFilterValue.indexOf(value);
-      if (index > -1) {
-        newFilterValue.splice(index, 1);
-      }
-    }
-
-    table.getColumn("status")?.setFilterValue(newFilterValue.length ? newFilterValue : undefined);
-  };
-
   return (
     <div className="space-y-4 max-w-[1000px]">
       {/* Filters */}
@@ -302,31 +274,17 @@ export default function TableTransaction() {
               ref={inputRef}
               className={cn(
                 "peer min-w-60 ps-9",
-                Boolean(table.getColumn("name")?.getFilterValue()) && "pe-9",
+                Boolean(table.getColumn("table")?.getFilterValue()) && "pe-9",
               )}
-              value={(table.getColumn("name")?.getFilterValue() ?? "") as string}
-              onChange={(e) => table.getColumn("name")?.setFilterValue(e.target.value)}
-              placeholder="Filter by name or email..."
+              value={(table.getColumn("table")?.getFilterValue() ?? "") as string}
+              onChange={(e) => table.getColumn("table")?.setFilterValue(e.target.value)}
+              placeholder="Filter by table..."
               type="text"
-              aria-label="Filter by name or email"
+              aria-label="Filter by table"
             />
             <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center justify-center ps-3 text-muted-foreground/80 peer-disabled:opacity-50">
               <ListFilter size={16} strokeWidth={2} aria-hidden="true" />
             </div>
-            {Boolean(table.getColumn("name")?.getFilterValue()) && (
-              <button
-                className="absolute inset-y-0 end-0 flex h-full w-9 items-center justify-center rounded-e-lg text-muted-foreground/80 outline-offset-2 transition-colors hover:text-foreground focus:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-ring/70 disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50"
-                aria-label="Clear filter"
-                onClick={() => {
-                  table.getColumn("name")?.setFilterValue("");
-                  if (inputRef.current) {
-                    inputRef.current.focus();
-                  }
-                }}
-              >
-                <CircleX size={16} strokeWidth={2} aria-hidden="true" />
-              </button>
-            )}
           </div>
         </div>
         <div className="flex items-center gap-3">
@@ -372,10 +330,17 @@ export default function TableTransaction() {
             </AlertDialog>
           )}
           {/* Add user button */}
-          <Button className="ml-auto" variant="outline">
-            <Plus className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
-            Add user
-          </Button>
+
+          {/* <Dialog>
+            <DialogTrigger asChild>
+              <Button className="ml-auto" variant="outline">
+                <Plus className="-ms-1 me-2 opacity-60" size={16} strokeWidth={2} aria-hidden="true" />
+                Add Order
+              </Button>
+            </DialogTrigger>
+            <AddOrderDialog
+            />
+          </Dialog> */}
         </div>
       </div>
 
@@ -569,47 +534,22 @@ export default function TableTransaction() {
   );
 }
 
-function RowActions({ row }: { row: Row<Item> }) {
+function RowActions({ row }: { row: Row<DataOrder> }) {
+  const [isOpen, setIsOpen] = useState(true)
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <div className="flex justify-end">
-          <Button size="icon" variant="ghost" className="shadow-none" aria-label="Edit item">
-            <Ellipsis size={16} strokeWidth={2} aria-hidden="true" />
-          </Button>
-        </div>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <span>Edit</span>
-            <DropdownMenuShortcut>⌘E</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem className="text-destructive focus:text-destructive">
-            <span>Delete</span>
-            <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        {/* <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            <span>Archive</span>
-            <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>Share</DropdownMenuItem>
-          <DropdownMenuItem>Add to favorites</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem className="text-destructive focus:text-destructive">
-          <span>Delete</span>
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
-        </DropdownMenuItem> */}
-      </DropdownMenuContent>
-    </DropdownMenu>
+    //row button (edit, delete, change password)
+    <div className="flex items-center justify-start gap-2">
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="text-xs bg-orange-500 hover:bg-primary">Detail</Button>
+        </DialogTrigger>
+        <DetailOrderDialog
+          isOpen={isOpen}
+          id={row.original.id}
+        />
+      </Dialog>
+    </div>
   );
 }
 
-export { TableTransaction }
+export { TableOrder }

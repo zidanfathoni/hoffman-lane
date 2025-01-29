@@ -1,7 +1,7 @@
 
 import { ContentLayout } from "@/components/templates/admin-panel/content-layout"
+import TableOrder from "@/modules/dashboard/transaction"
 import { Link } from "lucide-react"
-import TableTransaction from "./table"
 
 
 const TransactionPage = () => {
@@ -10,7 +10,7 @@ const TransactionPage = () => {
 
       <div className="container">
 
-        <TableTransaction />
+        <TableOrder />
       </div>
     </ContentLayout>
   )
