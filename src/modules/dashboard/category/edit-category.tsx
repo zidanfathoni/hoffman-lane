@@ -100,7 +100,7 @@ const EditCategoryDialog: React.FC<EditCategoryDialogProps> = ({ isOpen, id }) =
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Edit Category</DialogTitle>
-        <DialogDescription>Make changes to your Category here. Click save when you're done.</DialogDescription>
+        <DialogDescription>Make changes to your Category here. Click save when you&apos;re done.</DialogDescription>
       </DialogHeader>
       {
         loadingCategoryById ?

@@ -149,7 +149,7 @@ const OrderModules: React.FC = () => {
             'Content-Type': 'application/json',
           },
         }); // ganti '/endpoint' dengan endpoint yang sesuai
-      ; (window as any).snap.pay(
+      (window as any).snap.pay(
         ordersResponse?.data.snapToken,
         {
           // Optional

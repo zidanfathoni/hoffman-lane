@@ -64,7 +64,7 @@ const AddReservationDialog: React.FC = () => {
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Add Reservation</DialogTitle>
-        <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>
       </DialogHeader>
       <form
 

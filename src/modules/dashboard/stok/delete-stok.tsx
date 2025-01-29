@@ -52,7 +52,7 @@ const DeleteStokDialog: React.FC<EditStokDialogProps> = ({ isOpen, id }) => {
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Delete Stok</DialogTitle>
-        <DialogDescription>Really want to delete this Stok? Click delete when you're done.</DialogDescription>
+        <DialogDescription>Really want to delete this Stok? Click delete when you&apos;re done.</DialogDescription>
       </DialogHeader>
 
       <DialogFooter>
