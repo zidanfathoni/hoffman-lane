@@ -10,55 +10,6 @@ import { DataMenu, GetMenuResponse } from "@/lib/interface/menu/get-menu";
 import LoadingComponents from "@/components/atoms/loading";
 import { Input } from "@/components/atoms/input";
 
-const categories = [
-  { id: 1, name: "New Menu" },
-  { id: 2, name: "Main Course" },
-  { id: 3, name: "Brunch" },
-  { id: 4, name: "Salad" },
-  { id: 5, name: "Pasta" },
-  { id: 6, name: "Dessert" },
-  { id: 7, name: "Drinks" },
-  { id: 8, name: "Snacks" },
-  { id: 9, name: "Specials" },
-  { id: 10, name: "All" },
-]
-
-const posts = [
-  {
-    id: 1,
-    title: "Duis sem sem, gravida vel porttitor eu, volutpat ut arcu",
-    summary:
-      "Pellentesque eget quam ligula. Sed felis ante, consequat nec ultrices ut, ornare quis metus. Vivamus sit amet tortor vel enim sollicitudin hendrerit.",
-    label: "Ut varius dolor turpis",
-    author: "Jane Doe",
-    published: "1 Jan 2024",
-    href: "#",
-    image: "/images/logo.svg",
-  },
-  {
-    id: 2,
-    title: "Duis sem sem, gravida vel porttitor eu, volutpat ut arcu",
-    summary:
-      "Pellentesque eget quam ligula. Sed felis ante, consequat nec ultrices ut, ornare quis metus. Vivamus sit amet tortor vel enim sollicitudin hendrerit.",
-    label: "Ut varius dolor turpis",
-    author: "Jane Doe",
-    published: "1 Jan 2024",
-    href: "#",
-    image: "/images/logo.svg",
-  },
-  {
-    id: 3,
-    title: "Duis sem sem, gravida vel porttitor eu, volutpat ut arcu",
-    summary:
-      "Pellentesque eget quam ligula. Sed felis ante, consequat nec ultrices ut, ornare quis metus. Vivamus sit amet tortor vel enim sollicitudin hendrerit.",
-    label: "Ut varius dolor turpis",
-    author: "Jane Doe",
-    published: "1 Jan 2024",
-    href: "#",
-    image: "/images/logo.svg",
-  },
-];
-
 const MenuModules = () => {
   const [categoriesId, setCategoriesId] = useState<number>(0);
   const [search, setSearch] = useState<string>('');
