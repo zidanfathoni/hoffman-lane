@@ -109,7 +109,7 @@ const AddMenuDialog: React.FC = () => {
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Add Menu</DialogTitle>
-        <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>
       </DialogHeader>
       <form
 
@@ -163,6 +163,7 @@ const AddMenuDialog: React.FC = () => {
                     dataCategory.map((category) => {
                       return (
                         <SelectItem
+                          key={category.id}
                           onSelect={() => {
                             setCategory(category.name);
                             setSelectedCategoryId(category.id);

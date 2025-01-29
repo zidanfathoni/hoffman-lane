@@ -103,7 +103,7 @@ const EditUsersDialog: React.FC<EditUsersDialogProps> = ({ isOpen, id }) => {
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Edit profile</DialogTitle>
-        <DialogDescription>Make changes to your profile here. Click save when you're done.</DialogDescription>
+        <DialogDescription>Make changes to your profile here. Click save when you&apos;re done.</DialogDescription>
       </DialogHeader>
       {
         loadingUsersById ?

@@ -52,7 +52,7 @@ const DeleteQrCodeDialog: React.FC<EditQrCodeDialogProps> = ({ isOpen, id }) => 
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Delete QrCode</DialogTitle>
-        <DialogDescription>Really want to delete this QrCode? Click delete when you're done.</DialogDescription>
+        <DialogDescription>Really want to delete this QrCode? Click delete when you&apos;re done.</DialogDescription>
       </DialogHeader>
 
       <DialogFooter>

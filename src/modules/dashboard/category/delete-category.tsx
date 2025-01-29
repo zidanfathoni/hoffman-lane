@@ -52,7 +52,7 @@ const DeleteCategoryDialog: React.FC<EditCategoryDialogProps> = ({ isOpen, id })
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Delete Category</DialogTitle>
-        <DialogDescription>Really want to delete this Category? Click delete when you're done.</DialogDescription>
+        <DialogDescription>Really want to delete this Category? Click delete when you&apos;re done.</DialogDescription>
       </DialogHeader>
 
       <DialogFooter>
