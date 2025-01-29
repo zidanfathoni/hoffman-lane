@@ -98,12 +98,6 @@ const AddMenuDialog: React.FC = () => {
       );
       formData.append("status", status.toString());
 
-      console.log("FormData contents:");
-      for (let [key, value] of formData.entries()) {
-        console.log(`${key}:`, value);
-      }
-      console.log("upload_menu:", selectedFile);
-
       try {
         const response = await api.post(`/menu`,
           formData,
