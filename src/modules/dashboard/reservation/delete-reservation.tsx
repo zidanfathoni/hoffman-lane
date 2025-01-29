@@ -52,7 +52,7 @@ const DeleteReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen,
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Delete Reservation</DialogTitle>
-        <DialogDescription>Really want to delete this Reservation? Click delete when you're done.</DialogDescription>
+        <DialogDescription>Really want to delete this Reservation? Click delete when you&apos;re done.</DialogDescription>
       </DialogHeader>
 
       <DialogFooter>

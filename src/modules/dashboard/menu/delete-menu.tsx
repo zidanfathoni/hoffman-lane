@@ -52,7 +52,7 @@ const DeleteMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Delete Menu</DialogTitle>
-        <DialogDescription>Really want to delete this menu? Click delete when you're done.</DialogDescription>
+        <DialogDescription>Really want to delete this menu? Click delete when you&apos;re done.</DialogDescription>
       </DialogHeader>
 
       <DialogFooter>

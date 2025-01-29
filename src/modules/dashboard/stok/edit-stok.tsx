@@ -103,7 +103,7 @@ const EditStokDialog: React.FC<EditStokDialogProps> = ({ isOpen, id }) => {
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
         <DialogTitle>Edit Stok</DialogTitle>
-        <DialogDescription>Make changes to your Stok here. Click save when you're done.</DialogDescription>
+        <DialogDescription>Make changes to your Stok here. Click save when you&apos;re done.</DialogDescription>
       </DialogHeader>
       {
         loadingStokById ?
