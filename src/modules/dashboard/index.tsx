@@ -1,35 +1,72 @@
+"use client"
+
+import { useEffect, useState } from "react";
 import { BarChartUsers } from "./bar-chart"
+import { DataSummary, GetSummaryResponse } from "@/lib/interface/get-summary";
+import { api } from "@/lib";
+import formatToRupiah from "@/helper/formatRupiah";
+import { DataChart, GetChartResponse } from "@/lib/interface/get-chart";
 
-
-
-const data = [
-  {
-    name: "Total Transaction",
-    value: "Rp5.000.000"
-  },
-  {
-    name: "Total Users",
-    value: "200"
-  },
-  {
-    name: "Total Menu",
-    value: "14"
-  },
-  {
-    name: "Total Reservation",
-    value: "3"
-  },
-]
 
 const DashboardModules = () => {
-  const chartData = [
-    { month: "January", count: 186 },
-    { month: "February", count: 305 },
-    { month: "March", count: 237 },
-    { month: "April", count: 73 },
-    { month: "May", count: 209 },
-    { month: "June", count: 214 },
-  ]
+  const [data, setData] = useState<DataSummary | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [emptyData, setEmptyData] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const [dataChart, setDataChart] = useState<DataChart[]>([]);
+  const [loadingChart, setLoadingChart] = useState<boolean>(true);
+  const [emptyDataChart, setEmptyDataChart] = useState<boolean>(false);
+  const [errorChart, setErrorChart] = useState<string | null>(null);
+
+  const fetchDataSummary = async () => {
+    try {
+      const response = await api.get<GetSummaryResponse>(`/order/total`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setData(response.data.data);
+      if (response.data.data === null) {
+        setEmptyData(true);
+      } else {
+        setEmptyData(false);
+      }
+    } catch (error) {
+      setError('Failed to fetch data');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const fetchDataChart = async () => {
+    try {
+      const response = await api.get<GetChartResponse>(`/order/summary`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      setDataChart(response.data.data);
+      if (response.data.data === null) {
+        setEmptyDataChart(true);
+      } else {
+        setEmptyDataChart(false);
+      }
+    } catch (error) {
+      setErrorChart('Failed to fetch data');
+    } finally {
+      setLoadingChart(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchDataSummary();
+    fetchDataChart();
+  }, []);
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
 
   return (
 
@@ -37,36 +74,53 @@ const DashboardModules = () => {
       <div className="container">
 
         <div className="mt-14 grid gap-x-5 gap-y-8 md:grid-cols-2 lg:grid-cols-4">
-          {
-            data.map((item, index) => (
-              <div
-                key={index} /* Pindahkan key ke div luar */
-                className="border border-primary rounded-3xl p-5 shadow-lg overflow-hidden"
-              >
-                <div className="flex flex-col gap-5">
-                  <p className="truncate">{item.name}</p> {/* Gunakan truncate jika teks panjang */}
-                  <div className="text-2xl font-bold break-words">
-                    {item.value} {/* Tambahkan break-words agar teks panjang terputus */}
-                  </div>
-                </div>
+          <div
+            className="border border-primary rounded-3xl p-5 shadow-lg overflow-hidden"
+          >
+            <div className="flex flex-col gap-5">
+              <p className="truncate">Total {data?.transaction.name}</p> {/* Gunakan truncate jika teks panjang */}
+              <div className="text-2xl font-bold break-words">
+                {formatToRupiah(parseInt(data?.transaction.total ?? "0"))}
               </div>
-            ))
-          }
+            </div>
+          </div>
+          <div
+            className="border border-primary rounded-3xl p-5 shadow-lg overflow-hidden"
+          >
+            <div className="flex flex-col gap-5">
+              <p className="truncate">Total {data?.stok.name}</p> {/* Gunakan truncate jika teks panjang */}
+              <div className="text-2xl font-bold break-words">
+                {data?.stok.total}
+              </div>
+            </div>
+          </div>
+          <div
+            className="border border-primary rounded-3xl p-5 shadow-lg overflow-hidden"
+          >
+            <div className="flex flex-col gap-5">
+              <p className="truncate">Total {data?.menu.name}</p> {/* Gunakan truncate jika teks panjang */}
+              <div className="text-2xl font-bold break-words">
+                {data?.menu.total}
+              </div>
+            </div>
+          </div>
+          <div
+            className="border border-primary rounded-3xl p-5 shadow-lg overflow-hidden"
+          >
+            <div className="flex flex-col gap-5">
+              <p className="truncate">Total {data?.reservation.name}</p> {/* Gunakan truncate jika teks panjang */}
+              <div className="text-2xl font-bold break-words">
+                {data?.reservation.total}
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="mt-14 grid gap-x-5 gap-y-8 md:grid-cols-2 lg:grid-cols-2">
+
+        <div className="mt-14">
           <BarChartUsers
-            title="Total Users"
-            description="Total users in the last 6 months"
-            items={chartData}
-            footer={{
-              title: "Increased by 20%",
-              description: "Compared to the previous period",
-            }}
-          />
-          <BarChartUsers
-            title="Total Users"
-            description="Total users in the last 6 months"
-            items={chartData}
+            title="Total transaction"
+            description="Total transaction per month"
+            items={dataChart}
             footer={{
               title: "Increased by 20%",
               description: "Compared to the previous period",
