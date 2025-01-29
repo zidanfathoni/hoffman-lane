@@ -20,7 +20,8 @@ import {
 
 interface BarChartItemsProps {
   month: string
-  count: number
+  total_orders: number
+  total_amount: string
 }
 
 interface BarChartFooterProps {
@@ -38,9 +39,13 @@ interface BarChartProps {
 }
 
 const chartConfig = {
-  count: {
-    label: "Count",
+  total_orders: {
+    label: "Orders",
     color: "hsl(var(--chart-1))",
+  },
+  total_amount: {
+    label: "Amount",
+    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
@@ -73,7 +78,7 @@ const BarChartUsers: React.FC<BarChartProps> = ({ title, description, items, foo
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="count" fill="var(--color-count)" radius={8}>
+            <Bar dataKey="total_orders" fill="var(--color-total_orders)" radius={8}>
               <LabelList
                 position="top"
                 offset={12}
