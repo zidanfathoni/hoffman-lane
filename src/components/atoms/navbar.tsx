@@ -26,12 +26,12 @@ const Header: React.FC = () => {
     {
       title: "Reservation",
       description: "",
-      href: "#reservation"
+      href: "/#reservation"
     },
     {
       title: "Contact",
       description: "",
-      href: "#contact"
+      href: "/#contact"
     },
   ];
 

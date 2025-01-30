@@ -16,10 +16,16 @@ import { api } from "@/lib"
 import { GetMenuResponse } from "@/lib/interface/menu/get-menu"
 import { DataMenuById, GetMenuByIdResponse } from "@/lib/interface/menu/get-menu-byId"
 import { DataCategory, GetCategoryResponse } from "@/lib/interface/category/get-category"
+import { Checkbox } from "@/components/atoms/checkbox"
 
 interface EditMenuDialogProps {
   isOpen: boolean
   id: number
+}
+interface CategoryData {
+  id: number
+  name: string
+  description: string
 }
 
 const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
@@ -31,6 +37,8 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
   const [status, setStatus] = useState<boolean>(false);
   const [category, setCategory] = useState<string>('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<CategoryData | null>(null)
+  const [selectedCategoryName, setSelectedCategoryName] = useState<string>('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<number>(0);
 
   const [response, setResponse] = useState<GetMenuResponse>();
@@ -54,6 +62,11 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
     }
   };
 
+  const toggleSelected = (value: boolean) => {
+    setStatus(value);
+  }
+
+
 
   const fetchDataMenuById = async () => {
     setLoadingMenuById(true);
@@ -68,6 +81,15 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
       setDescription(response.data.data.description);
       setPrice(response.data.data.price);
       setUploadMenu(cdnImage + response.data.data.upload_menu);
+      setSelectedCategory(
+        {
+          id: response.data.data.category.idKategori,
+          name: response.data.data.category.name,
+          description: response.data.data.category.description
+        }
+      )
+      setSelectedCategoryName(response.data.data.category.name);
+      setSelectedCategoryId(response.data.data.category.idKategori);
       console.log("upload_menu", upload_menu);
       setStatus(response.data.data.status);
       setCategory(response.data.data.category.name);
@@ -102,33 +124,38 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
   }
 
   const updateDataMenuById = async () => {
-    setLoadingMenuById(true);
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price.toString());
-      formData.append("upload_menu", selectedFile);
-      formData.append("status", status.toString());
-      formData.append("category", selectedCategoryId.toString());
-      try {
-        const response = await api.put(`/menu/${id}`,
-          formData,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }); // ganti '/endpoint' dengan endpoint yang sesuai
-        setDataMenuById(response.data.data);
-      } catch (error) {
-        setErrorMenuById('Failed to fetch data');
-      } finally {
-        setLoadingMenuById(false);
-        // close dialog
-        window.location.reload();
+    // setLoadingMenuById(true);
+    const formData = new FormData();
 
-      }
+    formData.append("name", name);
+    formData.append("idKategori", selectedCategory?.id.toString() || '');
+    formData.append("description", description);
+    formData.append("price", price.toString());
+    if (selectedFile) {
+      formData.append("upload_menu", selectedFile);
+    } else {
+      formData.append("upload_menu", '');
     }
+    formData.append("status", status.toString());
+
+    try {
+      const response = await api.put(`/menu/${id}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        }); // ganti '/endpoint' dengan endpoint yang sesuai
+      setDataMenuById(response.data.data);
+    } catch (error) {
+      setErrorMenuById('Failed to fetch data');
+    } finally {
+      setLoadingMenuById(false);
+      // close dialog
+      window.location.reload();
+
+    }
+
   };
 
   useEffect(() => {
@@ -202,7 +229,15 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
                       Category
                     </Label>
                     <Select
-                      defaultValue={category}
+                      onValueChange={(value) => {
+                        console.log("Selected category:", value);
+                        setSelectedCategoryName(value);
+                        //search category id by name
+                        const category = dataCategory.find((category) => category.name === value);
+                        if (category) {
+                          setSelectedCategory(category);
+                        }
+                      }}
                     >
                       <SelectTrigger className="col-span-3">
                         <SelectValue placeholder="Select Category" />
@@ -210,19 +245,14 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Category</SelectLabel>
-                          {
-                            dataCategory.map((category) => {
-                              return (
-                                <SelectItem
-                                  key={category.id}
-                                  onSelect={() => {
-                                    setCategory(category.name);
-                                    setSelectedCategoryId(category.id);
-                                  }}
-                                  value={category.name}>{category.name}</SelectItem>
-                              )
-                            })
-                          }
+                          {dataCategory.map((category) => (
+                            <SelectItem
+                              key={category.id}
+                              value={category.name}
+                            >
+                              {category.name}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -231,20 +261,39 @@ const EditMenuDialog: React.FC<EditMenuDialogProps> = ({ isOpen, id }) => {
                     <Label htmlFor="image" className="text-right">
                       Image
                     </Label>
-                    <Input
-                      id="image"
-                      type="file"
-                      defaultValue={selectedFile?.name}
-                      onChange={handleFileChange}
+                    <Input id="image" type="file" accept="image/*" onChange={handleFileChange}
                       className="col-span-3" />
                   </div>
                   <div
-                    className=" items-end justify-end"
+                    className="flex items-end justify-end"
                   >
-                    <img
-                      src={upload_menu}
-                      className="h-32"
-                      alt="menu" />
+                    {
+                      selectedFile && (
+                        <img
+                          src={upload_menu}
+                          alt="upload_menu"
+                          className="h-32"
+                        />
+                      )
+                    }
+                  </div>
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="price" className="text-right">
+                      Recommended?
+                    </Label>
+                    <div className="relative col-span-3">
+                      <Checkbox id="status"
+                        defaultChecked={status}
+                        onCheckedChange={toggleSelected}
+                        className="peer h-4 w-4 border border-gray-300 rounded-md checked:bg-blue-600 checked:border-transparent checked:text-white"
+                      />
+                      <label
+                        htmlFor="status"
+                        className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 px-3"
+                      >
+                        Check if this menu is recommended
+                      </label>
+                    </div>
                   </div>
                 </div>
               </form>
