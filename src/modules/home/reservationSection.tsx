@@ -29,7 +29,7 @@ export default function ReservationSection() {
       return;
     }
     console.log(name, date, time, phone, people);
-    // await bookTable();
+    await bookTable();
   }
 
   const bookTable = async () => {
@@ -55,7 +55,7 @@ export default function ReservationSection() {
       console.log('Failed to fetch data');
     } finally {
       // close dialog
-      window.location.reload();
+      // window.location.reload();
     }
   };
 

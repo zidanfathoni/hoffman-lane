@@ -84,7 +84,7 @@ import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { api } from "@/lib";
 import { Dialog, DialogTrigger } from "@/components/atoms/dialog";
 import { DataQrCode, GetQrCodeResponse } from "@/lib/interface/qrcode/get-qrcode";
-import AddQrCodeDialog from "./add-category";
+import AddQrCodeDialog from "./add-qrcode";
 import DeleteQrCodeDialog from "./delete-qrcode";
 import { printQRCode } from "@/helper/imageToPdf";
 

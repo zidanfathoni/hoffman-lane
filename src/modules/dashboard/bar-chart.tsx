@@ -78,7 +78,7 @@ const BarChartUsers: React.FC<BarChartProps> = ({ title, description, items, foo
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="total_orders" fill="var(--color-total_orders)" radius={8}>
+            <Bar dataKey="total_amount" fill="var(--color-total_amount)" radius={8}>
               <LabelList
                 position="top"
                 offset={12}
@@ -89,14 +89,6 @@ const BarChartUsers: React.FC<BarChartProps> = ({ title, description, items, foo
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          {footer.title} <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          {footer.description}
-        </div>
-      </CardFooter>
     </Card>
   )
 }

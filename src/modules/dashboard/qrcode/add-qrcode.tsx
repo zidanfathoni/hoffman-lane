@@ -44,7 +44,7 @@ const AddQrCodeDialog: React.FC = () => {
   const addDataQrCode = async () => {
     setLoadingQrCode(true);
     try {
-      const response = await api.post(`/qrcode/`,
+      const response = await api.post(`/qrcode/generate-qrcode`,
         JSON.stringify({
           table: table,
         }),
