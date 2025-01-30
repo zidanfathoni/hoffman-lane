@@ -195,6 +195,7 @@ export default function TableMenu() {
   const [activeNumber, setActiveNumber] = useState<number>(
     response?.active ?? 0,
   );
+  //
 
 
   const fetchDataCategory = async () => {
