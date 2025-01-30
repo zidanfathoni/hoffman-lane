@@ -126,6 +126,17 @@ const columns: ColumnDef<DataMenu>[] = [
     enableHiding: false,
   },
   {
+    header: "Image",
+    accessorKey: "upload_menu",
+    cell: ({ row }) =>
+      <div className="flex items-center gap-2">
+        <img src={process.env.NEXT_PUBLIC_CDN_URL + "/assets/" + row.original.upload_menu} alt="upload_menu" className="h-20 rounded-lg" />
+      </div>,
+    size: 200,
+    filterFn: multiColumnFilterFn,
+    enableHiding: false,
+  },
+  {
     header: "Name",
     accessorKey: "name",
     cell: ({ row }) => <div className="font-medium">{row.getValue("name")}</div>,
