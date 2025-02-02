@@ -79,6 +79,7 @@ const AddQrCodeDialog: React.FC = () => {
             </Label>
             <Input
               id="name"
+              type="number"
               defaultValue={table}
               onChange={(e) => setTable(e.target.value)}
               className="col-span-3" />
