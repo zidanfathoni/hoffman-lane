@@ -1,5 +1,5 @@
 import { ArrowDownRight } from "lucide-react";
-
+import Link from 'next/link';
 import { Badge } from "@/components/atoms/badge";
 import { Button } from "@/components/atoms/button";
 
@@ -29,7 +29,9 @@ const HeroSection = () => {
                 Because life’s too short to delay happiness, especially the one on your plate!
               </p>
               <div className="flex w-full flex-col justify-center gap-2 sm:flex-row lg:justify-start">
-                <Button className="w-full sm:w-auto rounded-2xl px-10">Our Menu</Button>
+                 <Link href="/menu" passHref>
+                    <Button className="w-full sm:w-auto rounded-2xl px-10">Our Menu</Button>
+                  </Link>
               </div>
             </div>
           </div>

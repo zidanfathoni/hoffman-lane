@@ -27,6 +27,10 @@ const EditReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen, i
   const [time, setTime] = useState<string>('');
   const [phone, setPhone] = useState<number>(0);
   const [manyPeople, setManyPeople] = useState<string>('');
+<<<<<<< HEAD
+=======
+  const [room, setRoom] = useState<string>('');
+>>>>>>> 83461a0 (update fix)
 
   const [response, setResponse] = useState<GetReservationByIdResponse>();
   const [dataReservationById, setDataReservationById] = useState<DataReservationById | null>(null);
@@ -41,13 +45,21 @@ const EditReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen, i
         headers: {
           'Content-Type': 'application/json',
         },
+<<<<<<< HEAD
       }); // ganti '/endpoint' dengan endpoint yang sesuai
+=======
+      }); 
+>>>>>>> 83461a0 (update fix)
       setDataReservationById(response.data.data);
       setName(response.data.data.name);
       setDate(response.data.data.date);
       setTime(response.data.data.time);
       setPhone(response.data.data.phone);
       setManyPeople(response.data.data.manyPeople);
+<<<<<<< HEAD
+=======
+      setRoom(response.data.data.room );
+>>>>>>> 83461a0 (update fix)
     } catch (error) {
       setErrorReservationById('Failed to fetch data');
     } finally {
@@ -71,6 +83,10 @@ const EditReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen, i
           time: time,
           phone: phone,
           manyPeople: manyPeople,
+<<<<<<< HEAD
+=======
+          room: room,
+>>>>>>> 83461a0 (update fix)
         }),
         {
           headers: {
@@ -95,6 +111,7 @@ const EditReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen, i
   }, []);
 
 
+<<<<<<< HEAD
 
   // const onSelect = (value: string) => {
   //   if (value === 'admin') {
@@ -105,6 +122,8 @@ const EditReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen, i
 
   // }
 
+=======
+>>>>>>> 83461a0 (update fix)
   return (
     <DialogContent className="sm:max-w-[525px]">
       <DialogHeader>
@@ -176,6 +195,26 @@ const EditReservationDialog: React.FC<EditReservationDialogProps> = ({ isOpen, i
                       onChange={(e) => setManyPeople(e.target.value)}
                       className="col-span-3" />
                   </div>
+<<<<<<< HEAD
+=======
+                  <div className="grid grid-cols-4 items-center gap-4">
+                    <Label htmlFor="manyPeople" className="text-right">
+                      Choose your Room
+                    </Label>
+                    <select
+                      id="room"
+                      value={room}
+                      onChange={(e) => setRoom(e.target.value)}
+                      className="col-span-3 bg-white p-2 border rounded"
+                    >
+                      <option value="">Select a room</option>
+                      <option value="VIP Rooms">VIP Rooms</option>
+                      <option value="Glass House Indoor">Glass House Indoor</option>
+                      <option value="Semi Outdoor">Semi Outdoor</option>
+                      <option value="Indoor Bar">Indoor Bar</option>
+                    </select>
+                  </div>
+>>>>>>> 83461a0 (update fix)
                 </div>
               </form>
       }
