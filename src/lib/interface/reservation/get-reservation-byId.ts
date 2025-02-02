@@ -11,4 +11,8 @@ export interface DataReservationById {
   time: string
   phone: number
   manyPeople: string
+<<<<<<< HEAD
+=======
+  room: string
+>>>>>>> 83461a0 (update fix)
 }

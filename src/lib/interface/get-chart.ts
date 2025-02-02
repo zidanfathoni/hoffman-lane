@@ -7,5 +7,5 @@ export interface GetChartResponse {
 export interface DataChart {
   month: string
   total_orders: number
-  total_amount: any
+  total_amount: string
 }

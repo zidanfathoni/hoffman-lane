@@ -13,6 +13,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/atoms/alert-dialog";
 import { Badge } from "@/components/atoms/badge";
+import formatToRupiah from "@/helper/formatRupiah";
 import { Button } from "@/components/atoms/button";
 import { Checkbox } from "@/components/atoms/checkbox";
 import {
@@ -167,7 +168,7 @@ const columns: ColumnDef<DataOrder>[] = [
   {
     header: "Gross Amount",
     accessorKey: "gross_amount",
-    cell: ({ row }) => <div>{row.getValue("gross_amount")}</div>,
+    cell: ({ row }) => <div>{formatToRupiah(row.getValue("gross_amount"))}</div>,
     size: 180,
     filterFn: multiColumnFilterFn,
   },

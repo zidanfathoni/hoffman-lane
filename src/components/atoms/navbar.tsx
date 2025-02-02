@@ -34,7 +34,6 @@ const Header: React.FC = () => {
       href: "/#contact"
     },
   ];
-  //
 
 
   useEffect(() => {

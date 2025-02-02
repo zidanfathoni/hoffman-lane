@@ -14,6 +14,7 @@ import {
 } from "@/components/atoms/alert-dialog";
 import { Badge } from "@/components/atoms/badge";
 import { Button } from "@/components/atoms/button";
+import formatToRupiah from "@/helper/formatRupiah";
 import { Checkbox } from "@/components/atoms/checkbox";
 import {
   DropdownMenu,
@@ -152,7 +153,7 @@ const columns: ColumnDef<DataMenu>[] = [
   {
     header: "Price",
     accessorKey: "price",
-    cell: ({ row }) => <div className="font-medium">{row.getValue("price")}</div>,
+    cell: ({ row }) => <div className="font-medium">{formatToRupiah(row.getValue("price"))}</div>,
     size: 100,
   },
   {
