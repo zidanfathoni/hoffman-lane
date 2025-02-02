@@ -7,8 +7,6 @@ import { api } from "@/lib";
 import formatToRupiah from "@/helper/formatRupiah";
 import { DataChart, GetChartResponse } from "@/lib/interface/get-chart";
 
-<<<<<<< HEAD
-=======
 interface TopMenu {
   id_menu: number;
   total_qty: string;
@@ -17,7 +15,6 @@ interface TopMenu {
   category: string;
 }
 
->>>>>>> 83461a0 (update fix)
 
 const DashboardModules = () => {
   const [data, setData] = useState<DataSummary | undefined>(undefined);
@@ -30,15 +27,12 @@ const DashboardModules = () => {
   const [emptyDataChart, setEmptyDataChart] = useState<boolean>(false);
   const [errorChart, setErrorChart] = useState<string | null>(null);
 
-<<<<<<< HEAD
-=======
 
 
   const [topMenus, setTopMenus] = useState<TopMenu[]>([]);
   const [loadingTopMenus, setLoadingTopMenus] = useState<boolean>(true);
   const [errorTopMenus, setErrorTopMenus] = useState<string | null>(null);
 
->>>>>>> 83461a0 (update fix)
   const fetchDataSummary = async () => {
     try {
       const response = await api.get<GetSummaryResponse>(`/order/total`, {
@@ -79,11 +73,6 @@ const DashboardModules = () => {
     }
   }
 
-<<<<<<< HEAD
-  useEffect(() => {
-    fetchDataSummary();
-    fetchDataChart();
-=======
   const fetchTopMenus = async () => {
     try {
       const response = await api.get<{ status: boolean; message: string; data: TopMenu[] }>(`/order/most-ordered`);
@@ -99,7 +88,6 @@ const DashboardModules = () => {
     fetchDataSummary();
     fetchDataChart();
     fetchTopMenus();
->>>>>>> 83461a0 (update fix)
   }, []);
 
   if (loading) {
@@ -165,8 +153,6 @@ const DashboardModules = () => {
             }}
           />
         </div>
-<<<<<<< HEAD
-=======
 
         <div className="mt-14">
           <h2 className="text-xl font-bold">List of Top Menu</h2>
@@ -197,7 +183,6 @@ const DashboardModules = () => {
             </div>
           )}
         </div>
->>>>>>> 83461a0 (update fix)
       </div>
     </section>
   )

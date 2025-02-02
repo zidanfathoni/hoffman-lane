@@ -7,11 +7,7 @@ export function Footer() {
       <div className="mx-4 flex h-14 items-center md:mx-8">
         <p className="text-left text-xs leading-loose text-muted-foreground md:text-sm">
 
-<<<<<<< HEAD
-          Z. © {date}{' '}
-=======
           © {date}{' '}
->>>>>>> 83461a0 (update fix)
           Hoffmann Lane
           . All rights reserved.
         </p>

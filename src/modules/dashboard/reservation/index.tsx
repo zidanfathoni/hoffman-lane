@@ -166,8 +166,6 @@ const columns: ColumnDef<DataReservation>[] = [
     enableHiding: false,
   },
   {
-<<<<<<< HEAD
-=======
     header: "Room",
     accessorKey: "room",
     cell: ({ row }) => <div className="font-medium">{row.getValue("room")}</div>,
@@ -176,7 +174,6 @@ const columns: ColumnDef<DataReservation>[] = [
     enableHiding: false,
   },
   {
->>>>>>> 83461a0 (update fix)
     id: "actions",
     header: () => <span className="font-medium items-center justify-center">Actions</span>,
     cell: ({ row }) => <RowActions row={row} />,

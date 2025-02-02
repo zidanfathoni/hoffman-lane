@@ -43,11 +43,7 @@ const DetailOrderDialog: React.FC<DetailOrderDialogProps> = ({ isOpen, id }) => 
         headers: {
           'Content-Type': 'application/json',
         },
-<<<<<<< HEAD
-      }); // ganti '/endpoint' dengan endpoint yang sesuai
-=======
       });
->>>>>>> 83461a0 (update fix)
       setDataDetailOrderById(response.data.data);
       setOrderStatus(response.data.data.order_status);
       setOrderTime(response.data.data.order_time);

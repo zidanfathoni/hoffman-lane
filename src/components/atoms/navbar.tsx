@@ -34,10 +34,6 @@ const Header: React.FC = () => {
       href: "/#contact"
     },
   ];
-<<<<<<< HEAD
-  //
-=======
->>>>>>> 83461a0 (update fix)
 
 
   useEffect(() => {

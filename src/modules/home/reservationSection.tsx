@@ -15,21 +15,13 @@ export default function ReservationSection() {
   const [date, setDate] = useState<string>('');
   const [time, setTime] = useState<string>('');
   const [phone, setPhone] = useState<string>('');
-<<<<<<< HEAD
-  const [people, setPeople] = useState<string>('');
-=======
   const [manyPeople, setManyPeople] = useState<string>('');
   const [room, setRoom] = useState<string>('');
->>>>>>> 83461a0 (update fix)
 
   const submitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     //check if all field is filled
-<<<<<<< HEAD
-    if (name === '' || date === '' || time === '' || phone === '' || people === '') {
-=======
     if (name === '' || date === '' || time === '' || phone === '' || manyPeople === '' || room === '') {
->>>>>>> 83461a0 (update fix)
       toast({
         variant: 'destructive',
         title: 'Error',
@@ -37,10 +29,6 @@ export default function ReservationSection() {
       });
       return;
     }
-<<<<<<< HEAD
-    console.log(name, date, time, phone, people);
-=======
->>>>>>> 83461a0 (update fix)
     await bookTable();
   }
 
@@ -52,12 +40,8 @@ export default function ReservationSection() {
           date: date,
           time: time,
           phone: phone,
-<<<<<<< HEAD
-          people: people,
-=======
           manyPeople: manyPeople,
           room: room,
->>>>>>> 83461a0 (update fix)
         }),
         {
           headers: {
@@ -135,18 +119,6 @@ export default function ReservationSection() {
               />
             </div>
             <div className="space-y-2">
-<<<<<<< HEAD
-              <Label htmlFor="people">Many People ?</Label>
-              <Input
-                id="people"
-                type="number"
-                min="1"
-                placeholder="Number of guests"
-                value={people}
-                onChange={(e) => setPeople(e.target.value)}
-              />
-            </div>
-=======
               <Label htmlFor="manyPeople">Many People ?</Label>
               <Input
                 id="manyPeople"
@@ -172,7 +144,6 @@ export default function ReservationSection() {
                 <option value="Indoor Bar">Indoor Bar</option>
               </select>
             </div>
->>>>>>> 83461a0 (update fix)
             <Button
               className="w-full bg-[#C2C1B4] hover:bg-[#B1B0A4] text-black"
               onClick={submitHandler}>
