@@ -23,6 +23,8 @@ const AddReservationDialog: React.FC = () => {
   const [time, setTime] = useState<string>('');
   const [phone, setPhone] = useState<number>(0);
   const [manyPeople, setManyPeople] = useState<string>('');
+  const [room, setRoom] = useState<string>('');
+
 
   const [loadingReservation, setLoadingReservation] = useState<boolean>(true);
   const [emptyReservation, setEmptyReservation] = useState<boolean>(false);
@@ -44,6 +46,8 @@ const AddReservationDialog: React.FC = () => {
           time: time,
           phone: phone,
           manyPeople: manyPeople,
+          room: room,
+
         }),
         {
           headers: {
@@ -123,6 +127,23 @@ const AddReservationDialog: React.FC = () => {
               defaultValue={manyPeople}
               onChange={(e) => setManyPeople(e.target.value)}
               className="col-span-3" />
+          </div>
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="manyPeople" className="text-right">
+              Choose your Room
+            </Label>
+            <select
+              id="room"
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
+              className="col-span-3 bg-white p-2 border rounded"
+            >
+              <option value="">Select a room</option>
+              <option value="VIP Rooms">VIP Rooms</option>
+              <option value="Glass House Indoor">Glass House Indoor</option>
+              <option value="Semi Outdoor">Semi Outdoor</option>
+              <option value="Indoor Bar">Indoor Bar</option>
+            </select>
           </div>
         </div>
       </form>
